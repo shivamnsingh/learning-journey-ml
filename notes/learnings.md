@@ -8,3 +8,7 @@
 - Post pruning is done on smaller datasets.
 - Slight noise is fine but massive data loss is not.
 - Ensemble technique works good in imbalance dataset
+
+## 3. Traning Testing
+- If applying tranformation in traning data use fit_transform
+- If applying Transformation in testing data use only transform
