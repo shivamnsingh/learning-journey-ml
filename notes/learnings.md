@@ -7,3 +7,4 @@
 ## 2. Decision Tree
 - Post pruning is done on smaller datasets.
 - Slight noise is fine but massive data loss is not.
+- Ensemble technique works good in imbalance dataset
