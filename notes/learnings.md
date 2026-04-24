@@ -1,14 +1,15 @@
-# My Learnings
+1. Data Preprocessing  
+- Differentiate between categorical and numerical columns.  
+- Always check for data imbalance; if present, use SMOTE, downsampling, etc.  
 
-## 1. Data Preprocessing
-- Differentiate the dataset into categorical columns and numerical columns.
-- Always check if the data is imbalanced or not. If yes, use methods like SMOTE, downsampling, etc.
+2. Decision Tree  
+- Post pruning is preferred for smaller datasets.  
+- Slight noise is acceptable, but avoid major data loss.  
+- Ensemble techniques perform well on imbalanced data.  
 
-## 2. Decision Tree
-- Post pruning is done on smaller datasets.
-- Slight noise is fine but massive data loss is not.
-- Ensemble technique works good in imbalance dataset
+3. Training & Testing  
+- Use fit_transform on training data.  
+- Use only transform on testing data.  
 
-## 3. Traning Testing
-- If applying tranformation in traning data use fit_transform
-- If applying Transformation in testing data use only transform
+4. Coding Practice  
+- Convert repeated code into functions to make it reusable, clean, and scalable. 
