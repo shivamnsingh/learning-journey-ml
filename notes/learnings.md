@@ -14,4 +14,11 @@
 - Use `transform` only on testing data  
 
 ## 4. Coding Practice
-- Convert repeated code into functions for reusability, clean structure, and scalability  
+- Convert repeated code into functions for reusability, clean structure, and scalability
+
+## 5. Concept I Keep Forgetting
+- Bias is the difference between expected model prediction and true value
+- Variance = how much your prediction “jumps” when data changes
+- High Bias + Low Variance (Underfitting)
+- Low Bias + High Variance (Overfitting)
+- Low Bias + Low Variance (Ideal model)
