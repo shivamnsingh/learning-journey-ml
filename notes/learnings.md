@@ -22,3 +22,5 @@
 - High Bias + Low Variance (Underfitting)
 - Low Bias + High Variance (Overfitting)
 - Low Bias + Low Variance (Ideal model)
+- Always Use Class_weight = balance for imbalance data set
+- Try using SMOTE sometimes
