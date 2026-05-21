@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from linear_regression_from_scratch import LinearRegression
 from sklearn.model_selection import train_test_split
 
-X,y = datasets.make_regression(n_samples=100, n_features=1, noise=20, random_state=42)
+X,y = datasets.make_regression(n_samples=500, n_features=1, noise=20, random_state=42)
 x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 regressor = LinearRegression()
 regressor.fit(x_train, y_train)
