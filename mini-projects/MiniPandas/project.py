@@ -1,16 +1,75 @@
+class Series:
+
+    def __init__(self, data):
+        self.data = data
+
+    def __str__(self):
+        return str(self.data)
+
+    def mean(self):
+        return sum(self.data) / len(self.data)
+
+    def median(self):
+        sorted_data = sorted(self.data)
+        mid = len(sorted_data) // 2
+        if len(sorted_data) % 2 == 0:
+            return (sorted_data[mid-1] + sorted_data[mid]) / 2
+        else:
+            return sorted_data[mid]
+    def sum(self):
+        return sum(self.data)
+
+    def min(self):
+        return min(self.data)
+
+    def max(self):
+        return max(self.data)
+
+    def __getitem__(self, index):
+        print(index)
+        return self.data[index]
+
 class Dataframe:
 
-    def __init__(self, data, columns):
+    def __init__(self, data, columns): 
         self.data = data
-        self.columns = columns
+        self.columns = columns        
 
-    def __getitem__(self, column_name):
+
+    def info(self):
+        print(f"<class 'MiniPandas.Dataframe'>")
+        print(f"RangeIndex: {len(self.data)} entries, 0 to {len(self.data) - 1}")
+        print(f"Data columns (total {len(self.columns)} columns):")
+        print(" #   Column        Non-Null Count  Dtype")
+        print("---  ------        --------------  -----")
+
+        for column_no, cols in enumerate(self.columns):
+
+            non_null_count = 0
+
+            column_type = None
+
+            for row in self.data:
+                if row[column_no] is not None:
+                    non_null_count += 1
+
+                    if column_type is None:
+                        column_type = type(row[column_no])
+
+            if column_type is not None:
+                dtype = column_type.__name__
+            else:
+                dtype = "unknown"
+
+            print(f"{column_no:<4}{cols:<15}{non_null_count:<16}{dtype}")
+
+    def __getitem__(self, column_name): 
         if isinstance(column_name, str):
             column_no = self.columns.index(column_name)
             result = []
             for i in range(0, len(self.data)):
                 result.append(self.data[i][column_no])
-            return result
+            return Series(result)
 
         else:
             col_pst = []
@@ -23,7 +82,6 @@ class Dataframe:
                     selected_row.append(row[position])
                 result.append(selected_row)
             return result
-
     def head(self, n=5):
         print(self.data[:n])
 
@@ -35,7 +93,7 @@ class Dataframe:
 data = [
     ["Shivam", 20, 60],
     ["Rahul", 21, 55],
-    ["Aman", 19, 30],
+    ["Aman", None, 30],
     ["Raj", 22, 40],
     ["Vivek", 20, 22],
     ["Neha", 21, 45]
@@ -43,9 +101,6 @@ data = [
 
 columns = ["Name", "Age", "Weight"]
 
-a = [12,13,14,1,15,16]
+df = Dataframe(data, columns)
 
-b = len(a) // 2
-print(b)
-
-print(a[b],a[b-1])
+df.info()
