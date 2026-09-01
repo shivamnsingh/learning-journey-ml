@@ -44,9 +44,10 @@ class Dataframe:
         self.data = data
         self.columns = columns        
 
-    def sort_values(self,self.column_name,ascending = True):
+    def sort_values(self,column_name,ascending = True):
         column_no = self.columns.index(column_name)
-        sorted_data = self.data.sort
+        sorted_data = sorted(self.data[column_no])
+        print(sorted_data)
 
 
     def info(self):
@@ -118,6 +119,5 @@ data = [
 columns = ["Name", "Age", "Weight"]
 
 df = Dataframe(data, columns)
-filtered = df[df["Age"] > 20]
 
-filtered.info()
+df["Age"].sort_values
