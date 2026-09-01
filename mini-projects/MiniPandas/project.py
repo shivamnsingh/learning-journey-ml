@@ -44,6 +44,10 @@ class Dataframe:
         self.data = data
         self.columns = columns        
 
+    def sort_values(self,self.column_name,ascending = True):
+        column_no = self.columns.index(column_name)
+        sorted_data = self.data.sort
+
 
     def info(self):
         print(f"<class 'MiniPandas.Dataframe'>")
