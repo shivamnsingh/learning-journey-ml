@@ -9,6 +9,9 @@ data = [
 ]
 
 columns = ["Name", "Age", None]
-for cols in columns:
-    temp = cols
-    print(type(temp))
+
+a = [1,2,3,4,5]
+ep = []
+for i in a:
+    ep.append(i>20)
+print(ep)
