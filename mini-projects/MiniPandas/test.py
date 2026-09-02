@@ -9,9 +9,12 @@ data = [
 ]
 
 columns = ["Name", "Age", None]
+a = [20, 21, 20, 22, 21, 20]
+d = {}
+for value in a:
+    if value not in d:
+        d[value] = []
+    d[value].append(value)
 
-a = [1,2,3,4,5]
-ep = []
-for i in a:
-    ep.append(i>20)
-print(ep)
+print(d)
+

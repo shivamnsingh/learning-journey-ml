@@ -6,6 +6,20 @@ class Series:
     def __str__(self):
         return str(self.data)
 
+    def __str__(self):
+        return str(self.data)
+
+    def __repr__(self):
+        return f"Series({self.data})"
+
+    def __len__(self):
+        return len(self.data)
+
+    def __eq__(self, other):
+        if not isinstance(other, Series):
+            return NotImplemented
+        return self.data == other.data
+
     def mean(self):
         return sum(self.data) / len(self.data)
 
@@ -38,16 +52,35 @@ class Series:
         print(index)
         return self.data[index]
 
+
 class Dataframe:
 
     def __init__(self, data, columns): 
         self.data = data
-        self.columns = columns        
+        self.columns = columns    
 
-    def sort_values(self,column_name,ascending = True):
+def groupby(self, column_name):
+    column_no = self.columns.index(column_name)
+    d = {}
+    for row in self.data:
+        
+    return d
+
+
+    def sort_values(self, column_name, ascending=True):
         column_no = self.columns.index(column_name)
-        sorted_data = sorted(self.data[column_no])
-        print(sorted_data)
+        if ascending:
+            sorted_data = sorted(
+                self.data,
+                key=lambda row: (row[column_no] is None, row[column_no])
+            )
+        else:
+            sorted_data = sorted(
+                self.data,
+                key=lambda row: (row[column_no] is not None, row[column_no]),
+                reverse=True
+            )
+        return Dataframe(sorted_data, self.columns)
 
 
     def info(self):
@@ -69,6 +102,17 @@ class Dataframe:
             else:
                 dtype = "unknown"
             print(f"{column_no:<4}{cols:<15}{non_null_count:<16}{dtype}")
+
+    def __repr__(self):
+        return f"Dataframe({self.data}, columns={self.columns})"
+
+    def __len__(self):
+        return len(self.data)
+
+    def __eq__(self, other):
+        if not isinstance(other, Dataframe):
+            return NotImplemented
+        return self.data == other.data and self.columns == other.columns
 
     def __getitem__(self, column_name): 
         if isinstance(column_name, str):
@@ -97,6 +141,19 @@ class Dataframe:
                 result.append(selected_row)
             return result
 
+    def drop(self, column_name):
+        column_no = self.columns.index(column_name)
+        new_column = self.columns.copy()
+        new_column.pop(column_no)
+        new_data = []
+        for i in self.data:
+            copy_row = i.copy()
+            copy_row.pop(column_no)
+            new_data.append(copy_row)
+        return Dataframe(new_data, new_column)
+
+    def __str__(self):
+        return str(self.data)
 
     def head(self, n=5):
         print(self.data[:n])
@@ -114,10 +171,7 @@ data = [
     ["Vivek", 20, 22],
     ["Neha", 21, 45]
 ]
-
-
 columns = ["Name", "Age", "Weight"]
+df = Dataframe(data,columns)
+df.groupby("Age")
 
-df = Dataframe(data, columns)
-
-df["Age"].sort_values
