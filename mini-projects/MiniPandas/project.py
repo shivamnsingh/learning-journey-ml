@@ -52,20 +52,26 @@ class Series:
         print(index)
         return self.data[index]
 
+class GroupedDataframe:
+    def __init__(self, groups, columns):
+        self.groups = groups
+        self.columns = columns
 
 class Dataframe:
 
     def __init__(self, data, columns): 
         self.data = data
-        self.columns = columns    
+        self.columns = columns
 
-def groupby(self, column_name):
-    column_no = self.columns.index(column_name)
-    d = {}
-    for row in self.data:
-        
-    return d
-
+    def groupby(self, column_name):
+        column_no = self.columns.index(column_name)
+        d = {}
+        for row in self.data:
+            key = row[column_no]
+            if key not in d:
+                d[key] = []
+            d[key].append(row)
+        return GroupedDataframe(d, self.columns)
 
     def sort_values(self, column_name, ascending=True):
         column_no = self.columns.index(column_name)
@@ -173,5 +179,5 @@ data = [
 ]
 columns = ["Name", "Age", "Weight"]
 df = Dataframe(data,columns)
-df.groupby("Age")
-
+grouped = df.groupby("Age")
+print(grouped.groups)

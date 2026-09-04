@@ -15,6 +15,10 @@ for value in a:
     if value not in d:
         d[value] = []
     d[value].append(value)
-
-print(d)
+groups = {
+    20: [[20, 60], [20, 22]],
+    21: [[21, 55], [21, 45]]
+}
+for key,row in groups.items():
+    print(key)
 
