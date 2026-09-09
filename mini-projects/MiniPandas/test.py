@@ -7,8 +7,23 @@ data = [
     ["Vivek", 20, 22],
     ["Neha", 21, 45]
 ]
-
+rows = [[20, 60], [20, 22]]
+column_index = 0
 
 def average_column(rows, column_index):
-    # step 1: collect all values at column_index across every row
-    # step 2: return their average
+    new = []
+    for row in rows:
+        new.append(row[column_index])
+    n = len(new)
+    print(sum(new)/n)
+
+def average_column(rows, column_index):
+    new = []
+    for row in rows:
+        new.append(row[column_index])
+    n = len(new)
+    return sum(new) / n
+
+rows = [[20, 60], [20, 22], [22, 40]]
+
+
