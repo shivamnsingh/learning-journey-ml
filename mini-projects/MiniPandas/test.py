@@ -8,17 +8,7 @@ data = [
     ["Neha", 21, 45]
 ]
 
-columns = ["Name", "Age", None]
-a = [20, 21, 20, 22, 21, 20]
-d = {}
-for value in a:
-    if value not in d:
-        d[value] = []
-    d[value].append(value)
-groups = {
-    20: [[20, 60], [20, 22]],
-    21: [[21, 55], [21, 45]]
-}
-for key,row in groups.items():
-    print(key)
 
+def average_column(rows, column_index):
+    # step 1: collect all values at column_index across every row
+    # step 2: return their average
