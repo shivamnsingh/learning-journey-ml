@@ -1,28 +1,20 @@
 class Series:
-
     def __init__(self, data):
         self.data = data
-
     def __str__(self):
         return str(self.data)
-
     def __str__(self):
         return str(self.data)
-
     def __repr__(self):
         return f"Series({self.data})"
-
     def __len__(self):
         return len(self.data)
-
     def __eq__(self, other):
         if not isinstance(other, Series):
             return NotImplemented
         return self.data == other.data
-
     def mean(self):
         return sum(self.data) / len(self.data)
-
     def __gt__(self, other):
         result = []
         for value in self.data:
@@ -31,7 +23,6 @@ class Series:
             else:
                 result.append(value > other)
         return Series(result)
-
     def median(self):
         sorted_data = sorted(self.data)
         mid = len(sorted_data) // 2
@@ -41,21 +32,75 @@ class Series:
             return sorted_data[mid]
     def sum(self):
         return sum(self.data)
-
     def min(self):
         return min(self.data)
-
     def max(self):
         return max(self.data)
-
     def __getitem__(self, index):
         print(index)
         return self.data[index]
 
 class GroupedDataframe:
-    def __init__(self, groups, columns):
+    def __init__(self, groups, columns, group_column_index):
         self.groups = groups
         self.columns = columns
+        self.group_column_index = group_column_index
+
+    def sum(self):
+        result_rows = []
+        for key, rows in self.groups.items():
+            new_row = [key]
+            for column_index in range(len(self.columns)):
+                if column_index == self.group_column_index:
+                    continue
+                values = []
+                for row in rows:
+                    value = row[column_index]
+                    if isinstance(value, (int, float)):
+                        values.append(value)
+                if values:
+                    total = sum(values)
+                    new_row.append(total)
+            result_rows.append(new_row)
+        return result_rows
+
+def count(self):
+    result_rows = []
+    for key, rows in self.groups.items():
+        new_row = [key]
+        for column_index in range(len(self.columns)):
+            if column_index == self.group_column_index:
+                continue
+
+            count = 0
+            for row in rows:
+                value = row[column_index]
+                if value is not None:
+                    count += 1
+            new_row.append(count)
+
+        result_rows.append(new_row)
+
+    return result_rows
+
+    def mean(self):
+        result_rows = []
+
+        for key, rows in self.groups.items():
+            new_row = [key]
+            for column_index in range(len(self.columns)):
+                if column_index == self.group_column_index:
+                    continue
+                values = []
+                for row in rows:
+                    value = row[column_index]
+                    if isinstance(value, (int, float)):
+                        values.append(value)
+                if values:
+                    average = sum(values) / len(values)
+                    new_row.append(average)
+            result_rows.append(new_row)
+        return result_rows
 
 class Dataframe:
 
@@ -71,7 +116,7 @@ class Dataframe:
             if key not in d:
                 d[key] = []
             d[key].append(row)
-        return GroupedDataframe(d, self.columns)
+        return GroupedDataframe(d, self.columns,column_no)
 
     def sort_values(self, column_name, ascending=True):
         column_no = self.columns.index(column_name)
@@ -169,15 +214,13 @@ class Dataframe:
         return (len(self.data), len(self.data[0]))
 
 
-data = [
-    ["Shivam", 20, 60],
-    ["Rahul", 21, 55],
-    ["Aman", None, 30],
-    ["Raj", 22, 40],
-    ["Vivek", 20, 22],
-    ["Neha", 21, 45]
-]
-columns = ["Name", "Age", "Weight"]
-df = Dataframe(data,columns)
-grouped = df.groupby("Age")
-print(grouped.groups)
+# data = [
+#     ["Shivam", 20, 60],
+#     ["Rahul", 21, 55],
+#     ["Aman", None, 30],
+#     ["Raj", 22, 40],
+#     ["Vivek", 20, 22],
+#     ["Shivam", 21, 45]
+# ]
+# columns = ["Name", "Age", "Weight"]
+
