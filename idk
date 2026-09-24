@@ -1,0 +1,568 @@
+LinearRegression()
+python
+LinearRegression(
+    fit_intercept=True,
+    copy_X=True,
+    tol=1e-6,
+    n_jobs=None,
+    positive=False
+)
+Param	Default	What it does
+fit_intercept	True	Whether to calculate an intercept (bias term). Set False only if you know data passes through origin.
+copy_X	True	Copies X before fitting instead of overwriting it in place.
+tol	1e-6	Precision tolerance for the solver's stopping criterion.
+n_jobs	None	CPU cores to use for computation (-1 = all cores). Only helps for multi-target or large sparse problems.
+positive	False	If True, forces all coefficients to be non-negative.
+
+(No alpha — plain linear regression has no regularization, so nothing to tune here — this is why GridSearchCV on LinearRegression alone is pointless.)
+
+Ridge()
+python
+Ridge(
+    alpha=1.0,
+    fit_intercept=True,
+    copy_X=True,
+    max_iter=None,
+    tol=1e-4,
+    solver='auto',
+    positive=False,
+    random_state=None
+)
+Param	Default	What it does
+alpha	1.0	L2 penalty strength. Higher = more shrinkage. This is the main one you tune.
+fit_intercept	True	Same as above.
+copy_X	True	Same as above.
+max_iter	None	Max iterations for iterative solvers (only used by some solver choices).
+tol	1e-4	Solver precision/stopping tolerance.
+solver	'auto'	Algorithm: 'auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga', 'lbfgs'. 'auto' picks automatically based on data.
+positive	False	Forces non-negative coefficients (only supported by 'lbfgs' solver).
+random_state	None	Seed, only relevant for 'sag'/'saga' solvers (they're stochastic).
+Lasso()
+python
+Lasso(
+    alpha=1.0,
+    fit_intercept=True,
+    precompute=False,
+    copy_X=True,
+    max_iter=1000,
+    tol=1e-4,
+    warm_start=False,
+    positive=False,
+    random_state=None,
+    selection='cyclic'
+)
+Param	Default	What it does
+alpha	1.0	L1 penalty strength. Main tuning param — can zero out coefficients entirely.
+fit_intercept	True	Same as above.
+precompute	False	Use a precomputed Gram matrix to speed up fitting on large datasets.
+copy_X	True	Same as above.
+max_iter	1000	Max iterations of the coordinate descent solver. You bumped this to 10000 because the default often isn't enough for it to converge.
+tol	1e-4	Convergence tolerance.
+warm_start	False	If True, reuses the previous fit's solution as a starting point (useful when refitting repeatedly with slightly different params).
+positive	False	Forces non-negative coefficients.
+random_state	None	Seed for the 'random' feature-selection order (only relevant if selection='random').
+selection	'cyclic'	How coordinate descent picks which feature to update each step: 'cyclic' (in order) or 'random' (often converges faster).
+ElasticNet()
+python
+ElasticNet(
+    alpha=1.0,
+    l1_ratio=0.5,
+    fit_intercept=True,
+    precompute=False,
+    max_iter=1000,
+    copy_X=True,
+    tol=1e-4,
+    warm_start=False,
+    positive=False,
+    random_state=None,
+    selection='cyclic'
+)
+
+Same as Lasso, plus:
+
+Param	Default	What it does
+l1_ratio	0.5	Blend between L1 (Lasso) and L2 (Ridge). 0 = pure Ridge, 1 = pure Lasso. Second main tuning param alongside alpha.
+Pipeline() and GridSearchCV() themselves
+python
+Pipeline(
+    steps,
+    memory=None,
+    verbose=False
+)
+Param	What it does
+steps	List of (name, transformer/estimator) tuples — the only one you've used.
+memory	Cache intermediate step results to disk (avoids recomputing on repeated pipeline runs — useful with slow preprocessing).
+verbose	Prints timing info for each step when fitting.
+python
+GridSearchCV(
+    estimator,
+    param_grid,
+    scoring=None,
+    n_jobs=None,
+    refit=True,
+    cv=None,
+    verbose=0,
+    error_score=np.nan,
+    return_train_score=False
+)
+Param	Default	What it does
+estimator	—	The pipeline/model to tune.
+param_grid	—	Dict or list of dicts of hyperparameters to search.
+scoring	None	Metric to optimize for (defaults to the estimator's own .score() if not set — r2 for regressors).
+n_jobs	None	Parallelism.
+refit	True	Automatically refits the best combo on the full training set — this is why grid.predict() works directly.
+cv	None	Number of folds (or a CV splitter object). Default is 5 if left None.
+verbose	0	Prints progress as it searches; higher numbers = more detail.
+error_score	np.nan	What to do/report if a fit fails on some combo instead of crashing the whole search.
+return_train_score	False	If True, also reports training-set scores (not just validation) in cv_results_ — useful for spotting overfitting.
+
+For your notes, the ones worth actually memorizing (the rest you'll rarely touch) are: alpha, l1_ratio, max_iter, fit_intercept, solver (Ridge only), and on the search side cv, scoring, n_jobs, refit.
+
+Here's the full parameter reference for the other common prediction models — the ones from your earlier blueprint, now with every parameter, not just the tuned ones.
+
+DecisionTreeRegressor()
+python
+DecisionTreeRegressor(
+    criterion='squared_error',
+    splitter='best',
+    max_depth=None,
+    min_samples_split=2,
+    min_samples_leaf=1,
+    min_weight_fraction_leaf=0.0,
+    max_features=None,
+    random_state=None,
+    max_leaf_nodes=None,
+    min_impurity_decrease=0.0,
+    ccp_alpha=0.0
+)
+Param	Default	What it does
+criterion	'squared_error'	How split quality is measured: 'squared_error', 'friedman_mse', 'absolute_error', 'poisson'.
+splitter	'best'	'best' picks the optimal split each time; 'random' picks among random splits (faster, more regularized).
+max_depth	None	Max tree depth. None = grows until leaves are pure — usually overfits, so this is your #1 tuning knob.
+min_samples_split	2	Min samples a node needs before it's allowed to split further.
+min_samples_leaf	1	Min samples required in a leaf node. Raising this smooths the model out.
+min_weight_fraction_leaf	0.0	Same idea as above but as a fraction of total sample weight.
+max_features	None	How many features to consider per split. None = all features.
+random_state	None	Seed for reproducibility (splitter has some randomness).
+max_leaf_nodes	None	Caps total number of leaf nodes.
+min_impurity_decrease	0.0	A split only happens if it reduces impurity by at least this much.
+ccp_alpha	0.0	Cost-complexity pruning strength — higher values prune more branches after the tree is built.
+RandomForestRegressor()
+python
+RandomForestRegressor(
+    n_estimators=100,
+    criterion='squared_error',
+    max_depth=None,
+    min_samples_split=2,
+    min_samples_leaf=1,
+    min_weight_fraction_leaf=0.0,
+    max_features=1.0,
+    max_leaf_nodes=None,
+    min_impurity_decrease=0.0,
+    bootstrap=True,
+    oob_score=False,
+    n_jobs=None,
+    random_state=None,
+    verbose=0,
+    warm_start=False,
+    ccp_alpha=0.0,
+    max_samples=None
+)
+
+All the DecisionTreeRegressor params apply per-tree, plus:
+
+Param	Default	What it does
+n_estimators	100	Number of trees in the forest. More = generally better but slower, diminishing returns past a point.
+bootstrap	True	Whether each tree trains on a random resampled subset of rows (bagging).
+oob_score	False	If True and bootstrap=True, uses leftover "out-of-bag" samples to estimate performance without a separate validation set.
+n_jobs	None	Parallelize tree-building across cores.
+verbose	0	Print progress while fitting.
+warm_start	False	Add more trees to an existing fitted forest instead of starting over.
+max_samples	None	If bootstrap=True, how many samples each tree draws (default = full dataset size, with replacement).
+GradientBoostingRegressor()
+python
+GradientBoostingRegressor(
+    loss='squared_error',
+    learning_rate=0.1,
+    n_estimators=100,
+    subsample=1.0,
+    criterion='friedman_mse',
+    min_samples_split=2,
+    min_samples_leaf=1,
+    min_weight_fraction_leaf=0.0,
+    max_depth=3,
+    min_impurity_decrease=0.0,
+    random_state=None,
+    max_features=None,
+    alpha=0.9,
+    verbose=0,
+    max_leaf_nodes=None,
+    warm_start=False,
+    validation_fraction=0.1,
+    n_iter_no_change=None,
+    tol=1e-4,
+    ccp_alpha=0.0
+)
+Param	Default	What it does
+loss	'squared_error'	Loss function: 'squared_error', 'absolute_error', 'huber', 'quantile'.
+learning_rate	0.1	Shrinks each tree's contribution. Lower = needs more trees but often generalizes better. Trade-off with n_estimators.
+n_estimators	100	Number of boosting stages (sequential trees).
+subsample	1.0	Fraction of rows used per tree (< 1.0 adds randomness, like bagging).
+max_depth	3	Depth per tree — kept shallow by default since boosting builds many weak trees.
+validation_fraction	0.1	Portion of training data held out for early stopping (only used if n_iter_no_change is set).
+n_iter_no_change	None	Stops boosting early if validation score doesn't improve for this many rounds.
+tol	1e-4	Tolerance for early stopping.
+alpha	0.9	Only used with loss='huber' or 'quantile' — sets the quantile.
+ccp_alpha	0.0	Same pruning idea as decision tree.
+SVR() (Support Vector Regressor)
+python
+SVR(
+    kernel='rbf',
+    degree=3,
+    gamma='scale',
+    coef0=0.0,
+    tol=1e-3,
+    C=1.0,
+    epsilon=0.1,
+    shrinking=True,
+    cache_size=200,
+    verbose=False,
+    max_iter=-1
+)
+Param	Default	What it does
+kernel	'rbf'	Shape of the decision function: 'linear', 'poly', 'rbf', 'sigmoid'.
+degree	3	Only used with kernel='poly' — polynomial degree.
+gamma	'scale'	Kernel coefficient for 'rbf'/'poly'/'sigmoid' — controls how far a single point's influence reaches.
+coef0	0.0	Independent term, only used with 'poly'/'sigmoid'.
+C	1.0	Regularization strength — inverse relationship (like LogisticRegression), lower = more regularization.
+epsilon	0.1	Width of the "no penalty" margin around predictions — errors smaller than this aren't penalized at all.
+shrinking	True	Uses a shrinking heuristic to speed up training.
+max_iter	-1	-1 = no iteration limit.
+KNeighborsRegressor()
+python
+KNeighborsRegressor(
+    n_neighbors=5,
+    weights='uniform',
+    algorithm='auto',
+    leaf_size=30,
+    p=2,
+    metric='minkowski',
+    n_jobs=None
+)
+Param	Default	What it does
+n_neighbors	5	How many nearest points to average. Main tuning param.
+weights	'uniform'	'uniform' = equal vote; 'distance' = closer points count more.
+algorithm	'auto'	Data structure for neighbor search: 'auto', 'ball_tree', 'kd_tree', 'brute'.
+leaf_size	30	Affects speed/memory of tree-based algorithms, not results.
+p	2	Power parameter for Minkowski distance (p=1 = Manhattan, p=2 = Euclidean).
+metric	'minkowski'	Distance metric used.
+Classification equivalents (differences only)
+
+LogisticRegression() — already covered fully in our earlier message (penalty, C, solver, l1_ratio), plus a couple more worth noting:
+
+python
+LogisticRegression(
+    penalty='l2', dual=False, tol=1e-4, C=1.0, fit_intercept=True,
+    class_weight=None, random_state=None, solver='lbfgs',
+    max_iter=100, multi_class='auto', n_jobs=None, l1_ratio=None
+)
+class_weight — 'balanced' auto-adjusts for imbalanced classes.
+max_iter — often needs raising (like Lasso) if you get a convergence warning.
+
+DecisionTreeClassifier / RandomForestClassifier — identical parameter names/defaults to the regressor versions above, except criterion defaults to 'gini' instead of 'squared_error' (other option: 'entropy'), plus an added class_weight param.
+
+SVC() — same as SVR plus class_weight, and no epsilon (that's regression-only); adds probability=False (set True if you need .predict_proba(), but it slows training).
+
+KNeighborsClassifier — identical to KNeighborsRegressor params above.
+
+For your notes, the "actually worth tuning" shortlist per model:
+
+Tree/Forest/Boosting → max_depth, n_estimators, learning_rate (boosting only), min_samples_leaf
+SVM → C, kernel, gamma
+KNN → n_neighbors, weights
+Everything else → usually leave at default unless you have a specific reason
+
+"""
+Hyperparameter tuning reference - GridSearchCV templates
+Same pattern for every model: Pipeline -> param_grid -> GridSearchCV -> fit -> best_params_
+
+Assumes X_train, y_train, X_test, y_test already exist.
+"""
+
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import (
+    mean_absolute_error, mean_squared_error, r2_score,
+    accuracy_score, f1_score
+)
+
+
+def evaluate_regression(name, y_true, y_pred):
+    mae = mean_absolute_error(y_true, y_pred)
+    rmse = mean_squared_error(y_true, y_pred) ** 0.5
+    r2 = r2_score(y_true, y_pred)
+    print(f"{name}: MAE={mae:.2f}, RMSE={rmse:.2f}, R2={r2:.2f}")
+
+
+def evaluate_classification(name, y_true, y_pred):
+    acc = accuracy_score(y_true, y_pred)
+    f1 = f1_score(y_true, y_pred, average="weighted")
+    print(f"{name}: Accuracy={acc:.2f}, F1={f1:.2f}")
+
+
+# ======================================================================
+# REGRESSION MODELS
+# ======================================================================
+
+# ---- Ridge ----
+from sklearn.linear_model import Ridge
+
+ridge_pipe = Pipeline([("scaler", StandardScaler()), ("model", Ridge())])
+ridge_grid_params = {"model__alpha": [10, 1.0, 0.1, 0.01]}
+
+ridge_grid = GridSearchCV(ridge_pipe, ridge_grid_params, cv=5, scoring="r2", n_jobs=-1)
+ridge_grid.fit(X_train, y_train)
+print("Ridge best:", ridge_grid.best_params_, ridge_grid.best_score_)
+evaluate_regression("Ridge", y_test, ridge_grid.predict(X_test))
+
+
+# ---- Lasso ----
+from sklearn.linear_model import Lasso
+
+lasso_pipe = Pipeline([("scaler", StandardScaler()), ("model", Lasso(max_iter=10000))])
+lasso_grid_params = {"model__alpha": [10, 1.0, 0.1, 0.01]}
+
+lasso_grid = GridSearchCV(lasso_pipe, lasso_grid_params, cv=5, scoring="r2", n_jobs=-1)
+lasso_grid.fit(X_train, y_train)
+print("Lasso best:", lasso_grid.best_params_, lasso_grid.best_score_)
+evaluate_regression("Lasso", y_test, lasso_grid.predict(X_test))
+
+
+# ---- ElasticNet ----
+from sklearn.linear_model import ElasticNet
+
+elastic_pipe = Pipeline([("scaler", StandardScaler()), ("model", ElasticNet(max_iter=10000))])
+elastic_grid_params = {
+    "model__alpha": [10, 1.0, 0.1, 0.01],
+    "model__l1_ratio": [0.1, 0.3, 0.5, 0.7, 0.9],
+}
+
+elastic_grid = GridSearchCV(elastic_pipe, elastic_grid_params, cv=5, scoring="r2", n_jobs=-1)
+elastic_grid.fit(X_train, y_train)
+print("ElasticNet best:", elastic_grid.best_params_, elastic_grid.best_score_)
+evaluate_regression("ElasticNet", y_test, elastic_grid.predict(X_test))
+
+
+# ---- Ridge / Lasso / ElasticNet, all in ONE search ----
+pipe_all = Pipeline([("scaler", StandardScaler()), ("model", Ridge())])  # placeholder
+
+param_grid_all = [
+    {"model": [Ridge()], "model__alpha": [10, 1.0, 0.1, 0.01]},
+    {"model": [Lasso(max_iter=10000)], "model__alpha": [10, 1.0, 0.1, 0.01]},
+    {"model": [ElasticNet(max_iter=10000)],
+     "model__alpha": [10, 1.0, 0.1, 0.01],
+     "model__l1_ratio": [0.1, 0.5, 0.9]},
+]
+
+grid_all = GridSearchCV(pipe_all, param_grid_all, cv=5, scoring="r2", n_jobs=-1)
+grid_all.fit(X_train, y_train)
+print("Best of all three:", grid_all.best_params_, grid_all.best_score_)
+evaluate_regression("Best linear model", y_test, grid_all.predict(X_test))
+
+
+# ---- Decision Tree Regressor ----
+from sklearn.tree import DecisionTreeRegressor
+
+tree_pipe = Pipeline([("model", DecisionTreeRegressor(random_state=42))])
+tree_grid_params = {
+    "model__max_depth": [3, 5, 10, None],
+    "model__min_samples_split": [2, 5, 10],
+    "model__min_samples_leaf": [1, 2, 4],
+}
+
+tree_grid = GridSearchCV(tree_pipe, tree_grid_params, cv=5, scoring="r2", n_jobs=-1)
+tree_grid.fit(X_train, y_train)
+print("Decision Tree best:", tree_grid.best_params_, tree_grid.best_score_)
+evaluate_regression("Decision Tree", y_test, tree_grid.predict(X_test))
+
+
+# ---- Random Forest Regressor ----
+from sklearn.ensemble import RandomForestRegressor
+
+rf_pipe = Pipeline([("model", RandomForestRegressor(random_state=42))])
+rf_grid_params = {
+    "model__n_estimators": [100, 200, 500],
+    "model__max_depth": [None, 5, 10],
+    "model__min_samples_split": [2, 5],
+    "model__max_features": ["sqrt", "log2", None],
+}
+
+rf_grid = GridSearchCV(rf_pipe, rf_grid_params, cv=5, scoring="r2", n_jobs=-1)
+rf_grid.fit(X_train, y_train)
+print("Random Forest best:", rf_grid.best_params_, rf_grid.best_score_)
+evaluate_regression("Random Forest", y_test, rf_grid.predict(X_test))
+
+
+# ---- Gradient Boosting Regressor ----
+from sklearn.ensemble import GradientBoostingRegressor
+
+gb_pipe = Pipeline([("model", GradientBoostingRegressor(random_state=42))])
+gb_grid_params = {
+    "model__n_estimators": [100, 200],
+    "model__learning_rate": [0.01, 0.1, 0.2],
+    "model__max_depth": [3, 5],
+}
+
+gb_grid = GridSearchCV(gb_pipe, gb_grid_params, cv=5, scoring="r2", n_jobs=-1)
+gb_grid.fit(X_train, y_train)
+print("Gradient Boosting best:", gb_grid.best_params_, gb_grid.best_score_)
+evaluate_regression("Gradient Boosting", y_test, gb_grid.predict(X_test))
+
+
+# ---- SVR ----
+from sklearn.svm import SVR
+
+svr_pipe = Pipeline([("scaler", StandardScaler()), ("model", SVR())])
+svr_grid_params = {
+    "model__C": [0.1, 1, 10],
+    "model__kernel": ["linear", "rbf"],
+    "model__gamma": ["scale", "auto"],
+}
+
+svr_grid = GridSearchCV(svr_pipe, svr_grid_params, cv=5, scoring="r2", n_jobs=-1)
+svr_grid.fit(X_train, y_train)
+print("SVR best:", svr_grid.best_params_, svr_grid.best_score_)
+evaluate_regression("SVR", y_test, svr_grid.predict(X_test))
+
+
+# ---- KNN Regressor ----
+from sklearn.neighbors import KNeighborsRegressor
+
+knn_pipe = Pipeline([("scaler", StandardScaler()), ("model", KNeighborsRegressor())])
+knn_grid_params = {
+    "model__n_neighbors": [3, 5, 7, 9],
+    "model__weights": ["uniform", "distance"],
+}
+
+knn_grid = GridSearchCV(knn_pipe, knn_grid_params, cv=5, scoring="r2", n_jobs=-1)
+knn_grid.fit(X_train, y_train)
+print("KNN best:", knn_grid.best_params_, knn_grid.best_score_)
+evaluate_regression("KNN", y_test, knn_grid.predict(X_test))
+
+
+# ======================================================================
+# CLASSIFICATION MODELS
+# (swap y_train/y_test for a classification target, scoring='accuracy' or 'f1')
+# ======================================================================
+
+# ---- Logistic Regression ----
+from sklearn.linear_model import LogisticRegression
+
+logreg_pipe = Pipeline([("scaler", StandardScaler()), ("model", LogisticRegression(max_iter=10000))])
+logreg_grid_params = [
+    {"model__penalty": ["l2"], "model__C": [10, 1.0, 0.1], "model__solver": ["lbfgs"]},
+    {"model__penalty": ["l1"], "model__C": [10, 1.0, 0.1], "model__solver": ["saga"]},
+    {"model__penalty": ["elasticnet"], "model__C": [10, 1.0, 0.1],
+     "model__solver": ["saga"], "model__l1_ratio": [0.1, 0.5, 0.9]},
+]
+
+logreg_grid = GridSearchCV(logreg_pipe, logreg_grid_params, cv=5, scoring="accuracy", n_jobs=-1)
+logreg_grid.fit(X_train, y_train)
+print("Logistic Regression best:", logreg_grid.best_params_, logreg_grid.best_score_)
+evaluate_classification("Logistic Regression", y_test, logreg_grid.predict(X_test))
+
+
+# ---- Decision Tree Classifier ----
+from sklearn.tree import DecisionTreeClassifier
+
+tree_clf_pipe = Pipeline([("model", DecisionTreeClassifier(random_state=42))])
+tree_clf_grid_params = {
+    "model__criterion": ["gini", "entropy"],
+    "model__max_depth": [3, 5, 10, None],
+    "model__min_samples_split": [2, 5, 10],
+    "model__min_samples_leaf": [1, 2, 4],
+}
+
+tree_clf_grid = GridSearchCV(tree_clf_pipe, tree_clf_grid_params, cv=5, scoring="accuracy", n_jobs=-1)
+tree_clf_grid.fit(X_train, y_train)
+print("Decision Tree Classifier best:", tree_clf_grid.best_params_, tree_clf_grid.best_score_)
+evaluate_classification("Decision Tree Classifier", y_test, tree_clf_grid.predict(X_test))
+
+
+# ---- Random Forest Classifier ----
+from sklearn.ensemble import RandomForestClassifier
+
+rf_clf_pipe = Pipeline([("model", RandomForestClassifier(random_state=42))])
+rf_clf_grid_params = {
+    "model__n_estimators": [100, 200, 500],
+    "model__max_depth": [None, 5, 10],
+    "model__min_samples_split": [2, 5],
+    "model__max_features": ["sqrt", "log2", None],
+    "model__class_weight": [None, "balanced"],
+}
+
+rf_clf_grid = GridSearchCV(rf_clf_pipe, rf_clf_grid_params, cv=5, scoring="accuracy", n_jobs=-1)
+rf_clf_grid.fit(X_train, y_train)
+print("Random Forest Classifier best:", rf_clf_grid.best_params_, rf_clf_grid.best_score_)
+evaluate_classification("Random Forest Classifier", y_test, rf_clf_grid.predict(X_test))
+
+
+# ---- Gradient Boosting Classifier ----
+from sklearn.ensemble import GradientBoostingClassifier
+
+gb_clf_pipe = Pipeline([("model", GradientBoostingClassifier(random_state=42))])
+gb_clf_grid_params = {
+    "model__n_estimators": [100, 200],
+    "model__learning_rate": [0.01, 0.1, 0.2],
+    "model__max_depth": [3, 5],
+}
+
+gb_clf_grid = GridSearchCV(gb_clf_pipe, gb_clf_grid_params, cv=5, scoring="accuracy", n_jobs=-1)
+gb_clf_grid.fit(X_train, y_train)
+print("Gradient Boosting Classifier best:", gb_clf_grid.best_params_, gb_clf_grid.best_score_)
+evaluate_classification("Gradient Boosting Classifier", y_test, gb_clf_grid.predict(X_test))
+
+
+# ---- SVC ----
+from sklearn.svm import SVC
+
+svc_pipe = Pipeline([("scaler", StandardScaler()), ("model", SVC())])
+svc_grid_params = {
+    "model__C": [0.1, 1, 10],
+    "model__kernel": ["linear", "rbf"],
+    "model__gamma": ["scale", "auto"],
+}
+
+svc_grid = GridSearchCV(svc_pipe, svc_grid_params, cv=5, scoring="accuracy", n_jobs=-1)
+svc_grid.fit(X_train, y_train)
+print("SVC best:", svc_grid.best_params_, svc_grid.best_score_)
+evaluate_classification("SVC", y_test, svc_grid.predict(X_test))
+
+
+# ---- KNN Classifier ----
+from sklearn.neighbors import KNeighborsClassifier
+
+knn_clf_pipe = Pipeline([("scaler", StandardScaler()), ("model", KNeighborsClassifier())])
+knn_clf_grid_params = {
+    "model__n_neighbors": [3, 5, 7, 9],
+    "model__weights": ["uniform", "distance"],
+}
+
+knn_clf_grid = GridSearchCV(knn_clf_pipe, knn_clf_grid_params, cv=5, scoring="accuracy", n_jobs=-1)
+knn_clf_grid.fit(X_train, y_train)
+print("KNN Classifier best:", knn_clf_grid.best_params_, knn_clf_grid.best_score_)
+evaluate_classification("KNN Classifier", y_test, knn_clf_grid.predict(X_test))
+
+
+# ======================================================================
+# NOTES
+# ======================================================================
+# - Every block follows the same shape: Pipeline -> param_grid (dict, using
+#   'stepname__param') -> GridSearchCV -> .fit(X_train, y_train) -> best_params_
+# - Regression scoring: 'r2' or 'neg_mean_squared_error'
+# - Classification scoring: 'accuracy', 'f1', 'f1_weighted', 'roc_auc'
+# - Trees/Forests/Boosting don't need StandardScaler - they're not
+#   distance/scale sensitive - so it's left out of those pipelines.
+# - Swap GridSearchCV for RandomizedSearchCV (same arguments, plus n_iter=)
+#   when a grid gets too large to search exhaustively.
